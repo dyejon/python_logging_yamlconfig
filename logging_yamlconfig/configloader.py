@@ -5,6 +5,14 @@ import yaml
 import logging.config
 
 
+# use 3rd party library for
+try:
+    dictConfig = logging.dictConfig
+except AttributeError:
+    import logutils.dictconfig
+    dictConfig = logutils.dictconfig.dictConfig
+
+
 class YamlEnvLoader(yaml.Loader):
     """
     an extended YAML loader which can get values from environment variables where _ENV is specified, e.g.
@@ -109,7 +117,7 @@ class LoggingYAMLConfigLoader(object):
 
     def configure_dict(self, dct):
         try:
-            logging.config.dictConfig(dct)
+            dictConfig(dct)
         except Exception, e:
             print >>sys.stderr, "ERROR: could not configure logger with logging yaml- %s" % str(e)
 
